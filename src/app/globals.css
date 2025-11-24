@@ -1,15 +1,43 @@
 @import "tailwindcss";
 
+/* Export-safe palette & gradient kill switch */
+@layer base {
+  html[data-export] {
+    /* If your components use hsl(var(--token)), keep these as H S L triplets */
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --muted: 210 40% 96.1%;
+    --primary: 199 89% 48%;
+    --secondary: 215 20% 65%;
+    --accent: 142 71% 45%;
+    --destructive: 0 84.2% 60.2%;
+  }
+
+  /* Disable gradients during export so the rasterizer never sees color stops */
+  html[data-export] .bg-gradient-to-r,
+  html[data-export] .bg-gradient-to-l,
+  html[data-export] .bg-gradient-to-b,
+  html[data-export] .bg-gradient-to-t,
+  html[data-export] .bg-gradient-to-br,
+  html[data-export] .bg-gradient-to-bl,
+  html[data-export] .bg-gradient-to-tr,
+  html[data-export] .bg-gradient-to-tl,
+  html[data-export] [class*="from-"],
+  html[data-export] [class*="via-"],
+  html[data-export] [class*="to-"] {
+    background-image: none !important;
+  }
+
+  /* Force white background on the exported node */
+  html[data-export] #invoice-preview {
+    background-color: #ffffff !important;
+  }
+}
+
+/* ---- App theme (no @theme, no oklch) ---- */
 :root {
   --background: #ffffff;
   --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -24,3 +52,5 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* REMOVE the old @theme inline block – it causes "unknownAtRules" */
